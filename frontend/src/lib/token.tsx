@@ -9,9 +9,9 @@ export interface TokenConfig {
   symbol:          TokenSymbol;
   name:            string;
   address:         `0x${string}`;
-  greenPayAddress: `0x${string}`;
-  invoiceAddress:  `0x${string}`;
-  greenFundAddress:`0x${string}`;
+  greenPayAddress: `0x${string}`;        // ← Same for both
+  invoiceAddress:  `0x${string}`;        // ← Same for both
+  greenFundAddress:`0x${string}`;        // ← Same for both
   decimals:        number;
   color:           string;
   bg:              string;
@@ -37,9 +37,9 @@ export const TOKENS: Record<TokenSymbol, TokenConfig> = {
     symbol:           "EURC",
     name:             "Euro Coin",
     address:          (process.env.NEXT_PUBLIC_EURC_ADDRESS as `0x${string}`) ?? "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
-    greenPayAddress:  (process.env.NEXT_PUBLIC_GREEN_PAY_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000",
-    invoiceAddress:   (process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000",
-    greenFundAddress: (process.env.NEXT_PUBLIC_GREEN_FUND_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000",
+    greenPayAddress:  (process.env.NEXT_PUBLIC_GREEN_PAY_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000", // ← Same as USDC
+    invoiceAddress:   (process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000", // ← Same
+    greenFundAddress: (process.env.NEXT_PUBLIC_GREEN_FUND_ADDRESS as `0x${string}`) ?? "0x0000000000000000000000000000000000000000", // ← Same
     decimals:         6,
     color:            "text-yellow-400",
     bg:               "bg-yellow-400/10",
