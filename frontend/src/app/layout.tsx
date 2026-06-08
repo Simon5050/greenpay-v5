@@ -4,31 +4,31 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Navbar } from "@/components/Navbar";
 
-// Syne (from static folder)
+// Syne
 const syne = localFont({
   src: [
     { 
-      path: "../../public/fonts/Syne/static/Syne-Regular.ttf", 
+      path: "/fonts/Syne/static/Syne-Regular.ttf", 
       weight: "400", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/Syne/static/Syne-Medium.ttf", 
+      path: "/fonts/Syne/static/Syne-Medium.ttf", 
       weight: "500", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/Syne/static/Syne-SemiBold.ttf", 
+      path: "/fonts/Syne/static/Syne-SemiBold.ttf", 
       weight: "600", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/Syne/static/Syne-Bold.ttf", 
+      path: "/fonts/Syne/static/Syne-Bold.ttf", 
       weight: "700", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/Syne/static/Syne-ExtraBold.ttf", 
+      path: "/fonts/Syne/static/Syne-ExtraBold.ttf", 
       weight: "800", 
       style: "normal" 
     },
@@ -37,26 +37,26 @@ const syne = localFont({
   display: "swap",
 });
 
-// DM Sans (static weights)
+// DM Sans
 const dmSans = localFont({
   src: [
     { 
-      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Regular.ttf", 
+      path: "/fonts/DM_Sans/static/DMSans_18pt-Regular.ttf", 
       weight: "400", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Medium.ttf", 
+      path: "/fonts/DM_Sans/static/DMSans_18pt-Medium.ttf", 
       weight: "500", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-SemiBold.ttf", 
+      path: "/fonts/DM_Sans/static/DMSans_18pt-SemiBold.ttf", 
       weight: "600", 
       style: "normal" 
     },
     { 
-      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Bold.ttf", 
+      path: "/fonts/DM_Sans/static/DMSans_18pt-Bold.ttf", 
       weight: "700", 
       style: "normal" 
     },
