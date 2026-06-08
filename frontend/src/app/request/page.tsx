@@ -8,7 +8,7 @@ import { useTokenRequest, useTokenContracts } from "@/hooks/useTokenContracts";
 import { useTokenAllowance } from "@/hooks/useTokenContracts";
 import { useToken } from "@/lib/token";
 import { TokenSelector } from "@/components/TokenSelector";
-import { PageHeader, TxStatusBanner, AddressDisplay } from "@/components/ui";
+import { TxStatusBanner, AddressDisplay } from "@/components/ui";
 import { Inbox, CheckCircle, XCircle, Loader2, Clock } from "lucide-react";
 import type { TxStatus } from "@/types";
 
@@ -99,7 +99,7 @@ function NewRequestForm() {
 }
 
 // ── Single request row ────────────────────────────────────────────────────────
-function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "outgoing"; address?: `0x${string}` }) {
+function RequestRow({ id, type }: { id: bigint; type: "incoming" | "outgoing" }) {
   const [txStatus, setTxStatus] = useState<TxStatus>("idle");
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const { writeContractAsync } = useWriteContract();
@@ -141,7 +141,9 @@ function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "out
       });
       setTxHash(hash);
       setTxStatus("success");
-    } catch { setTxStatus("error"); }
+    } catch {
+      setTxStatus("error");
+    }
   }
 
   async function handleCancel() {
@@ -155,7 +157,9 @@ function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "out
       });
       setTxHash(hash);
       setTxStatus("success");
-    } catch { setTxStatus("error"); }
+    } catch {
+      setTxStatus("error");
+    }
   }
 
   return (
@@ -163,7 +167,9 @@ function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "out
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-display font-semibold text-white">${formatUSDC(amount)} USDC</span>
+            <span className="font-display font-semibold text-white">
+              ${formatUSDC(amount)} USDC
+            </span>
             <span className={cn("text-xs px-2 py-0.5 rounded-full", statusInfo.bg, statusInfo.color)}>
               {statusInfo.label}
             </span>
@@ -178,7 +184,8 @@ function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "out
 
       {txStatus !== "idle" && <TxStatusBanner status={txStatus} txHash={txHash} />}
 
-      {status === 0 && (
+      {/* Fixed: requestStatus instead of status */}
+      {requestStatus === 0 && (
         <div className="flex gap-2">
           {type === "incoming" && (
             <button
@@ -205,10 +212,13 @@ function RequestRow({ id, type, address }: { id: bigint; type: "incoming" | "out
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// ── Main Page ─────────────────────────────────────────────────────────────────
 export default function RequestPage() {
   const { address } = useAccount();
   const [activeTab, setActiveTab] = useState<"create" | "incoming" | "outgoing">("create");
+
+  // Get token for display
+  const { token } = useToken();
 
   const { data: myRequestIds } = useReadContract({
     address: CONTRACTS.GreenPay,
@@ -230,7 +240,17 @@ export default function RequestPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
-      <div className="flex items-start justify-between mb-8"><div><h1 className="font-display font-bold text-2xl md:text-3xl text-white">Request Payment</h1><p className="text-slate-400 mt-1 text-sm">Ask someone to send you {token.symbol}</p></div><TokenSelector /></div>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h1 className="font-display font-bold text-2xl md:text-3xl text-white">
+            Request Payment
+          </h1>
+          <p className="text-slate-400 mt-1 text-sm">
+            Ask someone to send you {token?.symbol || "USDC"}
+          </p>
+        </div>
+        <TokenSelector />
+      </div>
 
       <div className="flex gap-1 p-1 bg-slate-900/60 rounded-xl border border-white/5 mb-6">
         {(["create", "incoming", "outgoing"] as const).map((tab) => (
@@ -242,11 +262,11 @@ export default function RequestPage() {
               activeTab === tab ? "bg-forest-600/20 text-forest-400" : "text-slate-400 hover:text-white"
             )}
           >
-            {tab === "create" ? "New Request"
+            {tab === "create"
+              ? "New Request"
               : tab === "incoming"
               ? <>Incoming {pendingIncoming > 0 && <span className="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-earth-500/20 text-earth-400">{pendingIncoming}</span>}</>
-              : `Outgoing${myRequestIds?.length ? ` (${myRequestIds.length})` : ""}`
-            }
+              : `Outgoing${myRequestIds?.length ? ` (${myRequestIds.length})` : ""}`}
           </button>
         ))}
       </div>
@@ -255,23 +275,31 @@ export default function RequestPage() {
 
       {activeTab === "incoming" && (
         <div className="flex flex-col gap-3">
-          {(incomingIds?.length ?? 0) === 0
-            ? <div className="card p-10 text-center text-slate-400"><Inbox className="w-8 h-8 mx-auto mb-3 opacity-30" />No incoming requests.</div>
-            : [...(incomingIds ?? [])].reverse().map((id) => (
-                <RequestRow key={id.toString()} id={id} type="incoming" address={address} />
-              ))
-          }
+          {(incomingIds?.length ?? 0) === 0 ? (
+            <div className="card p-10 text-center text-slate-400">
+              <Inbox className="w-8 h-8 mx-auto mb-3 opacity-30" />
+              No incoming requests.
+            </div>
+          ) : (
+            [...(incomingIds ?? [])].reverse().map((id) => (
+              <RequestRow key={id.toString()} id={id} type="incoming" />
+            ))
+          )}
         </div>
       )}
 
       {activeTab === "outgoing" && (
         <div className="flex flex-col gap-3">
-          {(myRequestIds?.length ?? 0) === 0
-            ? <div className="card p-10 text-center text-slate-400"><Inbox className="w-8 h-8 mx-auto mb-3 opacity-30" />No outgoing requests.</div>
-            : [...(myRequestIds ?? [])].reverse().map((id) => (
-                <RequestRow key={id.toString()} id={id} type="outgoing" address={address} />
-              ))
-          }
+          {(myRequestIds?.length ?? 0) === 0 ? (
+            <div className="card p-10 text-center text-slate-400">
+              <Inbox className="w-8 h-8 mx-auto mb-3 opacity-30" />
+              No outgoing requests.
+            </div>
+          ) : (
+            [...(myRequestIds ?? [])].reverse().map((id) => (
+              <RequestRow key={id.toString()} id={id} type="outgoing" />
+            ))
+          )}
         </div>
       )}
     </div>

@@ -1,18 +1,68 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Navbar } from "@/components/Navbar";
 
-const syne = Syne({
-  subsets: ["latin"],
+// Syne (from static folder)
+const syne = localFont({
+  src: [
+    { 
+      path: "../../public/fonts/Syne/static/Syne-Regular.ttf", 
+      weight: "400", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/Syne/static/Syne-Medium.ttf", 
+      weight: "500", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/Syne/static/Syne-SemiBold.ttf", 
+      weight: "600", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/Syne/static/Syne-Bold.ttf", 
+      weight: "700", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/Syne/static/Syne-ExtraBold.ttf", 
+      weight: "800", 
+      style: "normal" 
+    },
+  ],
   variable: "--font-syne",
-  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
+// DM Sans (static weights)
+const dmSans = localFont({
+  src: [
+    { 
+      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Regular.ttf", 
+      weight: "400", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Medium.ttf", 
+      weight: "500", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-SemiBold.ttf", 
+      weight: "600", 
+      style: "normal" 
+    },
+    { 
+      path: "../../public/fonts/DM_Sans/static/DMSans_18pt-Bold.ttf", 
+      weight: "700", 
+      style: "normal" 
+    },
+  ],
   variable: "--font-dm-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,9 +76,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${dmSans.variable}`}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-      </head>
       <body className="bg-slate-950 text-white font-body antialiased min-h-screen">
         <Providers>
           <div className="relative min-h-screen">
@@ -38,6 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="absolute top-1/2 -right-40 w-80 h-80 rounded-full bg-forest-800/20 blur-[100px]" />
               <div className="absolute -bottom-40 left-1/3 w-72 h-72 rounded-full bg-earth-900/20 blur-[100px]" />
             </div>
+
             <Navbar />
             <main className="relative pt-16">{children}</main>
           </div>

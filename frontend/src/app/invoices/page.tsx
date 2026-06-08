@@ -13,7 +13,7 @@ import type { LineItem, TxStatus } from "@/types";
 
 // ── Create invoice modal ───────────────────────────────────────────────────────
 function CreateModal({ onClose }: { onClose: () => void }) {
-  const { createInvoice, txStatus } = useInvoices();
+  const { createInvoice, txStatus } = useTokenInvoices();
   const [client, setClient] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -252,15 +252,22 @@ export default function InvoicesPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <PageHeader
-        title="Invoices"
-        subtitle={`Create, track and settle ${token.symbol} invoices on-chain`}
-        action={<div className="flex items-center gap-3"><TokenSelector />{isConnected && (
-          <button onClick={() => setShowCreate(true)} className="btn-primary py-2.5 text-sm">
-            <Plus className="w-4 h-4" /> New Invoice
-          </button>
-        )}
-      />
+    <PageHeader
+      title="Invoices"
+       subtitle={`Create, track and settle ${token?.symbol || 'USDC/EURC'} invoices on-chain`}
+        action={
+        <div className="flex items-center gap-3">
+         <TokenSelector />
+          {isConnected && (
+          <button 
+          onClick={() => setShowCreate(true)} 
+          className="btn-primary py-2.5 text-sm">
+          <Plus className="w-4 h-4" /> New Invoice
+        </button>
+      )}
+    </div>
+  }
+/>
 
       {showCreate && <CreateModal onClose={() => setShowCreate(false)} />}
 
