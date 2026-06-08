@@ -8,20 +8,7 @@ import "../contracts/GreenPay.sol";
 import "../contracts/InvoiceManager.sol";
 
 /// @notice Foundry deployment script for GreenPay protocol
-/// @dev Uses real Arc Testnet USDC: 0x3600000000000000000000000000000000000000
-///
-///   Required .env:
-///     PRIVATE_KEY          — deployer private key
-///     ARC_USDC_ADDRESS     — 0x3600000000000000000000000000000000000000
-///     TREASURY_ADDRESS     — platform fee recipient (defaults to deployer)
-///
-///   Run:
-///     forge script script/Deploy.s.sol:Deploy \
-///       --rpc-url https://rpc.testnet.arc.network \
-///       --broadcast \
-///       --verify \
-///       --verifier-url https://testnet.arcscan.app/api \
-///       -vvvv
+/// @dev Uses real Arc Testnet USDC + EURC
 contract Deploy is Script {
     function run() external {
         uint256 deployerKey = vm.envUint("PRIVATE_KEY");
@@ -39,7 +26,7 @@ contract Deploy is Script {
         require(usdcAddress != address(0), "ARC_USDC_ADDRESS not set");
 
         console.log("=====================================================");
-        console.log("  GreenPay Protocol - Arc Testnet Deployment");
+        console.log("  GreenPay - EURC Stack - Arc Testnet Deployment");
         console.log("=====================================================");
         console.log("Network    : Arc Testnet (chain %s)", block.chainid);
         console.log("Deployer   :", deployer);
@@ -87,6 +74,7 @@ contract Deploy is Script {
         console.log("NEXT_PUBLIC_ARC_RPC_URL=https://rpc.testnet.arc.network");
         console.log("NEXT_PUBLIC_EXPLORER_URL=https://testnet.arcscan.app");
         console.log("NEXT_PUBLIC_USDC_ADDRESS=0x3600000000000000000000000000000000000000");
+        console.log("NEXT_PUBLIC_EURC_ADDRESS=0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a");
         console.log("NEXT_PUBLIC_GREEN_FUND_ADDRESS=%s",       address(greenFund));
         console.log("NEXT_PUBLIC_GREEN_PAY_ADDRESS=%s",        address(greenPay));
         console.log("NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS=%s",  address(invoiceManager));
