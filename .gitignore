@@ -1,0 +1,24 @@
+# Foundry
+out/
+cache/
+broadcast/
+.env
+
+# Node / Next.js
+node_modules/
+.next/
+.env.local
+.env.*.local
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Deployments (generated)
+deployments.json

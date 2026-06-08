@@ -1,0 +1,12 @@
+{
+  "name": "GreenPay",
+  "short_name": "GreenPay",
+  "description": "Sustainable P2P Payments & Invoicing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090e1a",
+  "theme_color": "#25a828",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
