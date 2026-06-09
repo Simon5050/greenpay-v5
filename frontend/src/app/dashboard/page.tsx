@@ -19,11 +19,16 @@ export default function DashboardPage() {
   const { token } = useToken();
 
   const { data: balance } = useTokenBalance();
-  const { totalContributions, userContribution } = useTokenGreenFund();
+  const { totalContributions, userContribution, fundBalance } = useTokenGreenFund();
   const { sentIds = [], receivedIds = [], requestsToMeIds = [] } = useTokenGreenPay();
   const { issuedIds = [] } = useTokenInvoices();
 
-  const kg = usdcToKgCO2(userContribution ?? 0n);
+  // ✅ Safe conversion for the utility function
+  const safeUserContribution = typeof userContribution === "bigint" 
+    ? userContribution 
+    : 0n;
+
+  const kg = usdcToKgCO2(safeUserContribution);
   const trees = kgToTrees(kg);
 
   if (!isConnected || !address) {
@@ -48,7 +53,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
         <StatCard 
           label={`${token.symbol} Balance`} 
-          value={`${token.flag} ${formatUSDC(balance ?? 0n)}`} 
+          value={`${token.flag} ${formatUSDC(balance?.data ?? 0n)}`} 
           icon={<Wallet className="w-4 h-4" />} 
         />
         
@@ -72,8 +77,6 @@ export default function DashboardPage() {
           icon={<FileText className="w-4 h-4" />} 
         />
       </div>
-
-      {/* You can add more sections here */}
     </div>
   );
 }
