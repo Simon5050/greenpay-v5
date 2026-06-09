@@ -35,7 +35,7 @@ export default function ImpactPage() {
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
             <div className="badge-green mb-3">
-              <Leaf className="w-3.5 h-3.5" /> 0.5% of every transaction
+              <Leaf className="w-3.5 h-3.5" /> 0.13% of every transaction → carbon offset
             </div>
             <h2 className="font-display font-extrabold text-4xl text-white mb-1">
               {userKg.toFixed(3)} kg
@@ -64,7 +64,7 @@ export default function ImpactPage() {
         <StatCard
           label="CO₂ Offset"
           value={`${userKg.toFixed(3)} kg`}
-          sub="carbon dioxide equivalent"
+          sub={`CO₂ equivalent (${token.symbol})`}
           icon={<Wind className="w-4 h-4" />}
           accent="green"
         />
@@ -126,8 +126,8 @@ export default function ImpactPage() {
           {[
             {
               step: "1",
-              title: "Automatic 0.5% Fee",
-              desc: "Every USDC transaction through GreenPay deducts 0.5% as a green fee — baked into the protocol, no opt-out.",
+              title: "Automatic 0.13% Carbon Fee",
+              desc: `Every ${token.symbol} transaction through GreenPay routes 0.13% to GreenFund as a carbon offset fee — baked into the protocol, non-optional. A further 0.12% goes to the platform treasury. Total fee: 0.25%.`,
             },
             {
               step: "2",
@@ -137,7 +137,7 @@ export default function ImpactPage() {
             {
               step: "3",
               title: "Carbon Projects",
-              desc: "The fund owner (DAO / multisig) distributes USDC to verified carbon offset projects like Gold Standard or Verra.",
+              desc: `The fund owner (DAO / multisig) distributes accumulated ${token.symbol} to verified carbon offset projects such as Gold Standard and Verra.`,
             },
             {
               step: "4",

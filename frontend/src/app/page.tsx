@@ -142,16 +142,37 @@ export default function HomePage() {
       </div>
 
       {/* Protocol stats strip */}
-      <div className="card p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div className="card p-8 grid grid-cols-2 md:grid-cols-4 gap-8">
         {[
-          { label: "Total Fee",  value: "0.25%" },
-          { label: "Contracts",  value: "3"     },
-          { label: "Network",    value: "Arc"   },
-          { label: "Token",      value: "USDC"  },
-        ].map(({ label, value }) => (
-          <div key={label}>
-            <div className="font-display font-bold text-2xl text-forest-400">{value}</div>
-            <div className="text-slate-500 text-xs uppercase tracking-wider mt-1">{label}</div>
+          {
+            value: "0.25%",
+            label: "Total Protocol Fee",
+            sub:   "0.12% platform + 0.13% carbon",
+            color: "text-forest-400",
+          },
+          {
+            value: "0.13%",
+            label: "Carbon Offset",
+            sub:   "Auto-routed to GreenFund",
+            color: "text-forest-400",
+          },
+          {
+            value: "Arc",
+            label: "Network",
+            sub:   "EVM-compatible testnet",
+            color: "text-white",
+          },
+          {
+            value: "USDC + EURC",
+            label: "Supported Tokens",
+            sub:   "6-decimal stablecoins",
+            color: "text-white",
+          },
+        ].map(({ value, label, sub, color }) => (
+          <div key={label} className="flex flex-col gap-1">
+            <div className={`font-display font-bold text-xl ${color}`}>{value}</div>
+            <div className="text-slate-300 text-sm font-medium">{label}</div>
+            <div className="text-slate-500 text-xs">{sub}</div>
           </div>
         ))}
       </div>

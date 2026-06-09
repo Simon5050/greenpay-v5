@@ -13,7 +13,7 @@ import type { LineItem, TxStatus } from "@/types";
 
 // ── Create invoice modal ───────────────────────────────────────────────────────
 function CreateModal({ onClose }: { onClose: () => void }) {
-  const { createInvoice, txStatus } = useTokenInvoices();
+  const { createInvoice, txStatus } = useInvoices();
   const [client, setClient] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -175,8 +175,14 @@ function InvoiceRow({ id, userAddress }: { id: bigint; userAddress?: `0x${string
     try {
       if ((allowance ?? 0n) < totalAmount) {
         await writeContractAsync({ address: CONTRACTS.USDC, abi: USDC_ABI, functionName: "approve", args: [CONTRACTS.InvoiceManager, totalAmount] });
-        await new Promise((r) => setTimeout(r, 2000));
-        await refetchAllowance();
+        // Poll until allowance confirmed on-chain (works for USDC + EURC)
+        let confirmed = false;
+        for (let i = 0; i < 30; i++) {
+          await new Promise((r) => setTimeout(r, 1500));
+          const result = await refetchAllowance();
+          if ((result.data ?? 0n) >= amount) { confirmed = true; break; }
+        }
+        if (!confirmed) { setTxStatus("error"); return; }
       }
       setLocalStatus("pending");
       const hash = await writeContractAsync({ address: invoiceAddress, abi: INVOICE_MANAGER_ABI, functionName: "payInvoice", args: [id] });
@@ -252,22 +258,15 @@ export default function InvoicesPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-    <PageHeader
-      title="Invoices"
-       subtitle={`Create, track and settle ${token?.symbol || 'USDC/EURC'} invoices on-chain`}
-        action={
-        <div className="flex items-center gap-3">
-         <TokenSelector />
-          {isConnected && (
-          <button 
-          onClick={() => setShowCreate(true)} 
-          className="btn-primary py-2.5 text-sm">
-          <Plus className="w-4 h-4" /> New Invoice
-        </button>
-      )}
-    </div>
-  }
-/>
+      <PageHeader
+        title="Invoices"
+        subtitle={`Create, track and settle ${token.symbol} invoices on-chain`}
+        action={<div className="flex items-center gap-3"><TokenSelector />{isConnected && (
+          <button onClick={() => setShowCreate(true)} className="btn-primary py-2.5 text-sm">
+            <Plus className="w-4 h-4" /> New Invoice
+          </button>
+        )}
+      />
 
       {showCreate && <CreateModal onClose={() => setShowCreate(false)} />}
 
