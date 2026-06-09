@@ -31,8 +31,8 @@ export default function DashboardPage() {
     );
   }
 
-  // ✅ Fixed: Safe default to prevent "never" / type error
-  const safeUserContribution = userContribution ?? 0n;
+  // ✅ Strong type assertion to fix the stubborn "never" / "{}" error
+  const safeUserContribution = (userContribution as bigint) ?? 0n;
   const kg    = usdcToKgCO2(safeUserContribution);
   const trees = kgToTrees(kg);
 
