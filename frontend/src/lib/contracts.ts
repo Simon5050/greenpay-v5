@@ -1,9 +1,9 @@
 // src/lib/contracts.ts
 // Arc Testnet - Shared contracts for USDC & EURC
 
-import GreenPayJSON from '../../../out/GreenPay.sol/GreenPay.json' assert { type: 'json' };
-import InvoiceManagerJSON from '../../../out/InvoiceManager.sol/InvoiceManager.json' assert { type: 'json' };
-import GreenFundJSON from '../../../out/GreenFund.sol/GreenFund.json' assert { type: 'json' };
+import GreenPayJSON from '../../../out/GreenPay.sol/GreenPay.json' with { type: 'json' };
+import InvoiceManagerJSON from '../../../out/InvoiceManager.sol/InvoiceManager.json' with { type: 'json' };
+import GreenFundJSON from '../../../out/GreenFund.sol/GreenFund.json' with { type: 'json' };
 
 export const CONTRACTS = {
   GreenPay:        process.env.NEXT_PUBLIC_GREEN_PAY_ADDRESS        as `0x${string}`,
@@ -41,7 +41,7 @@ export const ERC20_ABI = [
 
 export const USDC_ABI = ERC20_ABI;
 
-// Real ABIs from Foundry — Removed `as const` (this was causing the error)
+// Real ABIs from Foundry
 export const GREEN_PAY_ABI = GreenPayJSON.abi;
 export const INVOICE_MANAGER_ABI = InvoiceManagerJSON.abi;
 export const GREEN_FUND_ABI = GreenFundJSON.abi;
