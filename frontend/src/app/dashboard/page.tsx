@@ -1,4 +1,5 @@
 "use client";
+
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useToken } from "@/lib/token";
@@ -12,10 +13,10 @@ import Link from "next/link";
 export default function DashboardPage() {
   const { address, isConnected } = useAccount();
   const { token } = useToken();
-  const { data: balance }                        = useTokenBalance();
+  const { data: balance } = useTokenBalance();
   const { totalContributions, userContribution } = useTokenGreenFund();
-  const { sentIds, receivedIds, requestsToMeIds }= useTokenGreenPay();
-  const { issuedIds }                            = useTokenInvoices();
+  const { sentIds, receivedIds, requestsToMeIds } = useTokenGreenPay();
+  const { issuedIds } = useTokenInvoices();
 
   if (!isConnected) {
     return (
@@ -30,7 +31,9 @@ export default function DashboardPage() {
     );
   }
 
-  const kg    = usdcToKgCO2(userContribution);
+  // ✅ Fixed: Safe default to prevent "never" / type error
+  const safeUserContribution = userContribution ?? 0n;
+  const kg    = usdcToKgCO2(safeUserContribution);
   const trees = kgToTrees(kg);
 
   return (
@@ -55,7 +58,7 @@ export default function DashboardPage() {
         <StatCard label={`${token.symbol} Received`} value={receivedIds.length.toString()}    icon={<Inbox className="w-4 h-4" />} />
         <StatCard label="Pending Requests"            value={requestsToMeIds.length.toString()} icon={<Inbox className="w-4 h-4" />} accent={requestsToMeIds.length > 0 ? "earth" : "default"} />
         <StatCard label="Protocol Offset"            value={`${formatUSDC(totalContributions)}`} sub="all-time" icon={<TrendingUp className="w-4 h-4" />} accent="green" />
-        <StatCard label="My Contribution"            value={`${formatUSDC(userContribution)}`}   sub="to GreenFund" icon={<Droplets className="w-4 h-4" />} accent="green" />
+        <StatCard label="My Contribution"            value={`${formatUSDC(safeUserContribution)}`}   sub="to GreenFund" icon={<Droplets className="w-4 h-4" />} accent="green" />
       </div>
 
       {/* Quick actions */}

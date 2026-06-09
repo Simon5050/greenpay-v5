@@ -1,19 +1,20 @@
 // src/lib/contracts.ts
-// Arc Testnet + Shared contracts for USDC & EURC
+// Arc Testnet - Shared contracts for USDC & EURC
+
+import GreenPayJSON from '../../../out/GreenPay.sol/GreenPay.json' assert { type: 'json' };
+import InvoiceManagerJSON from '../../../out/InvoiceManager.sol/InvoiceManager.json' assert { type: 'json' };
+import GreenFundJSON from '../../../out/GreenFund.sol/GreenFund.json' assert { type: 'json' };
 
 export const CONTRACTS = {
-  // Shared core contracts (used by both USDC and EURC)
   GreenPay:        process.env.NEXT_PUBLIC_GREEN_PAY_ADDRESS        as `0x${string}`,
   InvoiceManager:  process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS  as `0x${string}`,
   GreenFund:       process.env.NEXT_PUBLIC_GREEN_FUND_ADDRESS       as `0x${string}`,
-  Treasury:        process.env.NEXT_PUBLIC_TREASURY_ADDRESS         as `0x${string}`,
 
-  // Tokens
   USDC: process.env.NEXT_PUBLIC_USDC_ADDRESS as `0x${string}`,
-  EURC: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a" as `0x${string}`, // ← Arc Testnet EURC
+  EURC: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a" as `0x${string}`,
 } as const;
 
-// ── Standard ERC-20 ABI (works for both USDC and EURC) ─────────────────────
+// ERC-20 ABI for both USDC and EURC
 export const ERC20_ABI = [
   {
     inputs: [{ name: "owner", type: "address" }, { name: "spender", type: "address" }],
@@ -36,26 +37,11 @@ export const ERC20_ABI = [
     stateMutability: "view",
     type: "function",
   },
-  {
-    inputs: [],
-    name: "decimals",
-    outputs: [{ name: "", type: "uint8" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "symbol",
-    outputs: [{ name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
 ] as const;
 
-// You can keep USDC_ABI for backward compatibility or just use ERC20_ABI
 export const USDC_ABI = ERC20_ABI;
 
-// GreenPay + InvoiceManager ABIs (unchanged)
-export const GREEN_PAY_ABI = [ /* your existing GreenPay ABI */ ];
-export const INVOICE_MANAGER_ABI = [ /* your existing InvoiceManager ABI */ ];
-export const GREEN_FUND_ABI = [ /* your existing GreenFund ABI */ ];
+// Real ABIs from Foundry
+export const GREEN_PAY_ABI = GreenPayJSON.abi as const;
+export const INVOICE_MANAGER_ABI = InvoiceManagerJSON.abi as const;
+export const GREEN_FUND_ABI = GreenFundJSON.abi as const;
