@@ -10,7 +10,7 @@ import {
 } from "@/hooks/useTokenContracts";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { TokenSelector } from "@/components/TokenSelector";
-import { formatUSDC, usdcToKgCO2, kgToTrees, truncateAddress } from "@/lib/utils";
+import { formatUSDC, usdcToKgCO2, kgToTrees } from "@/lib/utils";
 import { StatCard, PageHeader } from "@/components/ui";
 import { Wallet, Send, FileText, Leaf } from "lucide-react";
 
@@ -19,14 +19,13 @@ export default function DashboardPage() {
   const { token } = useToken();
 
   const { data: balance } = useTokenBalance();
-  const { totalContributions, userContribution, fundBalance } = useTokenGreenFund();
-  const { sentIds = [], receivedIds = [], requestsToMeIds = [] } = useTokenGreenPay();
-  const { issuedIds = [] } = useTokenInvoices();
+  const { userContribution } = useTokenGreenFund();
+  const { sentIds = [], issuedIds = [] } = useTokenGreenPay();   // only what we need
+  const { issuedIds: invoiceIssuedIds = [] } = useTokenInvoices();
 
-  // ✅ Safe conversion for the utility function
-  const safeUserContribution = typeof userContribution === "bigint" 
-    ? userContribution 
-    : 0n;
+  // Safe bigint handling
+  const safeBalance = typeof balance === "bigint" ? balance : 0n;
+  const safeUserContribution = typeof userContribution === "bigint" ? userContribution : 0n;
 
   const kg = usdcToKgCO2(safeUserContribution);
   const trees = kgToTrees(kg);
@@ -53,7 +52,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
         <StatCard 
           label={`${token.symbol} Balance`} 
-          value={`${token.flag} ${formatUSDC(balance?.data ?? 0n)}`} 
+          value={`${token.flag} ${formatUSDC(safeBalance)}`} 
           icon={<Wallet className="w-4 h-4" />} 
         />
         
@@ -73,7 +72,7 @@ export default function DashboardPage() {
 
         <StatCard 
           label="Invoices Issued" 
-          value={String(issuedIds.length)} 
+          value={String(invoiceIssuedIds.length)} 
           icon={<FileText className="w-4 h-4" />} 
         />
       </div>
