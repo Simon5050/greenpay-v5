@@ -20,10 +20,9 @@ export default function DashboardPage() {
 
   const { data: balance } = useTokenBalance();
   const { userContribution } = useTokenGreenFund();
-  const { sentIds = [], issuedIds = [] } = useTokenGreenPay();   // only what we need
+  const { sentIds = [] } = useTokenGreenPay();
   const { issuedIds: invoiceIssuedIds = [] } = useTokenInvoices();
 
-  // Safe bigint handling
   const safeBalance = typeof balance === "bigint" ? balance : 0n;
   const safeUserContribution = typeof userContribution === "bigint" ? userContribution : 0n;
 

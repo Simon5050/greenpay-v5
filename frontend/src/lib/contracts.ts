@@ -41,7 +41,7 @@ export const ERC20_ABI = [
 
 export const USDC_ABI = ERC20_ABI;
 
-// Real ABIs from Foundry
-export const GREEN_PAY_ABI = GreenPayJSON.abi as const;
-export const INVOICE_MANAGER_ABI = InvoiceManagerJSON.abi as const;
-export const GREEN_FUND_ABI = GreenFundJSON.abi as const;
+// Real ABIs from Foundry — Removed `as const` (this was causing the error)
+export const GREEN_PAY_ABI = GreenPayJSON.abi;
+export const INVOICE_MANAGER_ABI = InvoiceManagerJSON.abi;
+export const GREEN_FUND_ABI = GreenFundJSON.abi;

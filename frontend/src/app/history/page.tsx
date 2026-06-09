@@ -16,7 +16,6 @@ type Tab = "all" | "sent" | "received";
 function PaymentRow({ id, userAddress }: { id: bigint; userAddress?: `0x${string}` }) {
   const { data: payment } = useTokenPayment(id);
 
-  // Safe guard - now works because of the improved hook
   if (!payment || !Array.isArray(payment) || payment.length !== 9) {
     return (
       <div className="card p-4 animate-pulse h-24">
@@ -84,7 +83,7 @@ export default function HistoryPage() {
   const { token } = useToken();
   const { greenPayAddress } = useTokenContracts();
 
-  const { data: sentIds = [] } = useReadContract({
+  const { data: sentIdsRaw } = useReadContract({
     address: greenPayAddress,
     abi: GREEN_PAY_ABI,
     functionName: "getSentPayments",
@@ -92,7 +91,7 @@ export default function HistoryPage() {
     query: { enabled: !!address },
   });
 
-  const { data: receivedIds = [] } = useReadContract({
+  const { data: receivedIdsRaw } = useReadContract({
     address: greenPayAddress,
     abi: GREEN_PAY_ABI,
     functionName: "getReceivedPayments",
@@ -100,11 +99,14 @@ export default function HistoryPage() {
     query: { enabled: !!address },
   });
 
+  const sentIds = (sentIdsRaw as bigint[]) ?? [];
+  const receivedIds = (receivedIdsRaw as bigint[]) ?? [];
+
   const allIds =
     tab === "sent"
-      ? [...(sentIds as bigint[])].reverse()
+      ? [...sentIds].reverse()
       : tab === "received"
-      ? [...(receivedIds as bigint[])].reverse()
+      ? [...receivedIds].reverse()
       : [...new Set([...sentIds, ...receivedIds])].sort((a, b) => Number(b) - Number(a));
 
   return (

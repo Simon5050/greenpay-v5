@@ -113,17 +113,17 @@ export function useTokenGreenPay() {
   const [txStatus, setTxStatus] = useState<TxStatus>("idle");
   const { writeContractAsync } = useWriteContract();
 
-  const { data: sentIds }         = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getSentPayments",    args: [address!], query: { enabled: !!address } });
-  const { data: receivedIds }     = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getReceivedPayments", args: [address!], query: { enabled: !!address } });
-  const { data: myRequestIds }    = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getMyRequests",       args: [address!], query: { enabled: !!address } });
-  const { data: requestsToMeIds } = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getRequestsToMe",     args: [address!], query: { enabled: !!address } });
+  const sentResult         = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getSentPayments",    args: [address!], query: { enabled: !!address } });
+  const receivedResult     = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getReceivedPayments", args: [address!], query: { enabled: !!address } });
+  const myRequestResult    = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getMyRequests",       args: [address!], query: { enabled: !!address } });
+  const requestsToMeResult = useReadContract({ address: greenPayAddress, abi: GREEN_PAY_ABI, functionName: "getRequestsToMe",     args: [address!], query: { enabled: !!address } });
 
   return {
     greenPayAddress,
-    sentIds:         sentIds         ?? [],
-    receivedIds:     receivedIds     ?? [],
-    myRequestIds:    myRequestIds    ?? [],
-    requestsToMeIds: requestsToMeIds ?? [],
+    sentIds:         (sentResult.data as bigint[])         ?? [],
+    receivedIds:     (receivedResult.data as bigint[])     ?? [],
+    myRequestIds:    (myRequestResult.data as bigint[])    ?? [],
+    requestsToMeIds: (requestsToMeResult.data as bigint[]) ?? [],
     txStatus,
     setTxStatus,
   };
@@ -158,13 +158,13 @@ export function useTokenInvoices() {
   const [txStatus, setTxStatus] = useState<TxStatus>("idle");
   const { writeContractAsync } = useWriteContract();
 
-  const { data: issuedIds }   = useReadContract({ address: invoiceAddress, abi: INVOICE_MANAGER_ABI, functionName: "getIssuedInvoices",   args: [address!], query: { enabled: !!address } });
-  const { data: receivedIds } = useReadContract({ address: invoiceAddress, abi: INVOICE_MANAGER_ABI, functionName: "getReceivedInvoices", args: [address!], query: { enabled: !!address } });
+  const issuedResult   = useReadContract({ address: invoiceAddress, abi: INVOICE_MANAGER_ABI, functionName: "getIssuedInvoices",   args: [address!], query: { enabled: !!address } });
+  const receivedResult = useReadContract({ address: invoiceAddress, abi: INVOICE_MANAGER_ABI, functionName: "getReceivedInvoices", args: [address!], query: { enabled: !!address } });
 
   return {
     invoiceAddress,
-    issuedIds:   issuedIds   ?? [],
-    receivedIds: receivedIds ?? [],
+    issuedIds:   (issuedResult.data as bigint[])   ?? [],
+    receivedIds: (receivedResult.data as bigint[]) ?? [],
     txStatus,
     setTxStatus,
   };
@@ -186,13 +186,13 @@ export function useTokenGreenFund() {
   const { address } = useAccount();
   const { greenFundAddress } = useTokenContracts();
 
-  const { data: totalContributions } = useReadContract({
+  const totalContributionsResult = useReadContract({
     address: greenFundAddress,
     abi: GREEN_FUND_ABI,
     functionName: "totalContributions",
   });
 
-  const { data: userContribution } = useReadContract({
+  const userContributionResult = useReadContract({
     address: greenFundAddress,
     abi: GREEN_FUND_ABI,
     functionName: "contributionOf",
@@ -200,15 +200,15 @@ export function useTokenGreenFund() {
     query: { enabled: !!address },
   });
 
-  const { data: fundBalance } = useReadContract({
+  const fundBalanceResult = useReadContract({
     address: greenFundAddress,
     abi: GREEN_FUND_ABI,
     functionName: "balance",
   });
 
   return {
-    totalContributions: totalContributions ?? 0n,
-    userContribution:   userContribution   ?? 0n,
-    fundBalance:        fundBalance        ?? 0n,
+    totalContributions: (totalContributionsResult.data as bigint) ?? 0n,
+    userContribution:   (userContributionResult.data as bigint)   ?? 0n,
+    fundBalance:        (fundBalanceResult.data as bigint)        ?? 0n,
   };
 }
