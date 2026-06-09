@@ -1,10 +1,17 @@
 "use client";
+
 import { useState } from "react";
 import { useAccount, useWriteContract } from "wagmi";
 import { parseUSDC, formatUSDC, formatDate } from "@/lib/utils";
 import { INVOICE_STATUS, cn } from "@/lib/utils";
 import { CONTRACTS, USDC_ABI, INVOICE_MANAGER_ABI } from "@/lib/contracts";
-import { useTokenInvoices, useTokenInvoice, useTokenContracts, useTokenAllowance } from "@/hooks/useTokenContracts";
+import {
+  useTokenInvoices,
+  useTokenInvoice,
+  useTokenContracts,
+  useTokenAllowance,
+  type InvoiceData,
+} from "@/hooks/useTokenContracts";
 import { useToken } from "@/lib/token";
 import { TokenSelector } from "@/components/TokenSelector";
 import { PageHeader, TxStatusBanner, EmptyState, AddressDisplay } from "@/components/ui";
@@ -254,7 +261,7 @@ function InvoiceRow({ id, userAddress }: { id: bigint; userAddress?: `0x${string
   const { data: inv } = useTokenInvoice(id);
   const { data: allowance, refetch: refetchAllowance } = useTokenAllowance(invoiceAddress);
 
-  if (!inv) {
+  if (!inv || !Array.isArray(inv) || inv.length < 11) {
     return (
       <div className="card p-4 animate-pulse h-20">
         <div className="h-4 bg-slate-800 rounded w-3/4 mb-2" />
@@ -263,7 +270,8 @@ function InvoiceRow({ id, userAddress }: { id: bigint; userAddress?: `0x${string
     );
   }
 
-  const [invId, issuer, client, totalAmount, platformFee, greenFee, , invTitle, , dueDate, status, createdAt] = inv;
+  const [invId, issuer, client, totalAmount, platformFee, greenFee, , invTitle, , dueDate, status, createdAt] =
+    inv as InvoiceData;
 
   const statusInfo = INVOICE_STATUS[status as keyof typeof INVOICE_STATUS];
   const isIssuer = issuer.toLowerCase() === userAddress?.toLowerCase();
@@ -389,7 +397,10 @@ export default function InvoicesPage() {
   const { token } = useToken();
   const { issuedIds, receivedIds } = useTokenInvoices();
 
-  const ids = activeTab === "issued" ? [...issuedIds].reverse() : [...receivedIds].reverse();
+  // ✅ Fixed: Strong typing for ids to prevent `never`
+  const ids = activeTab === "issued"
+    ? [...(issuedIds as bigint[])].reverse()
+    : [...(receivedIds as bigint[])].reverse();
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
