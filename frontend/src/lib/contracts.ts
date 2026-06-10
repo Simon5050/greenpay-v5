@@ -1,9 +1,9 @@
 // src/lib/contracts.ts
 // Arc Testnet - Shared contracts for USDC & EURC
 
-import GreenPayJSON from '@/abis/GreenPay.json' with { type: 'json' };
-import InvoiceManagerJSON from '@/abis/InvoiceManager.json' with { type: 'json' };
-import GreenFundJSON from '@/abis/GreenFund.json' with { type: 'json' };
+import GreenPayJSON from '../../out/GreenPay.sol/GreenPay.json' with { type: 'json' };
+import InvoiceManagerJSON from '../../out/InvoiceManager.sol/InvoiceManager.json' with { type: 'json' };
+import GreenFundJSON from '../../out/GreenFund.sol/GreenFund.json' with { type: 'json' };
 
 export const CONTRACTS = {
   GreenPay:        process.env.NEXT_PUBLIC_GREEN_PAY_ADDRESS        as `0x${string}`,
