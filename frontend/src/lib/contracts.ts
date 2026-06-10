@@ -1,7 +1,6 @@
 // src/lib/contracts.ts
 // Arc Testnet - Shared contracts for USDC & EURC
 
-// Adjusted relative paths because Vercel now builds from the "frontend" folder
 import GreenPayJSON from '../../../out/GreenPay.sol/GreenPay.json' with { type: 'json' };
 import InvoiceManagerJSON from '../../../out/InvoiceManager.sol/InvoiceManager.json' with { type: 'json' };
 import GreenFundJSON from '../../../out/GreenFund.sol/GreenFund.json' with { type: 'json' };
